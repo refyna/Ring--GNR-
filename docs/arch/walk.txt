@@ -1,0 +1,15 @@
+1 - ODBC Connectors
+    postgres ✅
+    mssql ✅
+    mongodb ✅
+    dynamodb
+    cassandra ✅
+
+2 - Reader Schema
+    postgres
+    mssql
+    mongodb
+    dynamodb
+    cassandra
+
+3 - think about keys and integrities
