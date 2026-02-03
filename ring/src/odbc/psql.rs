@@ -1,22 +1,23 @@
-use mongodb::{
-    Client, 
-    bson::doc, 
-    options::ClientOptions
-};
+use tokio::spawn;
+use tokio_postgres::{NoTls, Client};
 
-use crate::odbc::{StrConn, Connect};
+use crate::odbc::{StrConn, Connect, ErrorIn};
 
-pub struct MongoConnector {pub cfg: StrConn}
+pub struct PsqlConnector {pub cfg: StrConn}
 
-impl Connect for MongoConnector {
-    async fn conn(&self) -> Result<(), > {
-        let uri = &self.cfg.uri_parameters("mongodb");
-        let mut client_options = ClientOptions::parse(uri).await?;
+impl Connect for PsqlConnector {
+    async fn conn_psql(&self) -> Result<Client, ErrorIn> {
+        let (client, connection) = 
+            tokio_postgres::connect(&self.cfg.parameters(), NoTls)
+            .await
+            .map_err(|e| ErrorIn::new("psql connection", e))?;
+        
+        spawn(async move {
+            if let Err(e) = connection.await{                
+                //
+            }
+        });
 
-        let client = Client::with_options(client_options)?;
-        client.database("admin").run_command(doc! {"ping":1}).await?;
-
-        Ok(())
-
+        Ok(client)
     }
 }

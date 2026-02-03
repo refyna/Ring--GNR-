@@ -1,0 +1,7 @@
+Instalar para rodar testes, pois o openssl precisa estar no sistema:
+    sudo apt update
+    sudo apt install -y pkg-config libssl-dev
+    pkg-config --modversion openssl
+
+Serve para ver os logs:
+    RUST_LOG=debug cargo test conn_psql -- --nocapture

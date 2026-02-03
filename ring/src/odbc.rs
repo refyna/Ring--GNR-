@@ -4,14 +4,15 @@
 
 /* Author: Yury - 11/01/2025 */
 
-use std::fmt::{self, format};
-use crate::logs::{NotifyError, NotifyInfo, notification};
-
 pub mod psql;
 pub mod mssql;
 pub mod mongo;
 pub mod csdr;
 pub mod dyndb;
+
+pub mod errors;
+
+use errors::ErrorIn;
 
 // =========================== CONFIG ==================
 
@@ -20,10 +21,10 @@ pub struct StrConn {
     pub user: Option<String>,
     pub pwd: Option<String>,
     pub dbn: Option<String>,
-    pub acs_key: Option<String>,
-    pub scr_key: Option<String>,
     pub host: String,
     pub port: u16,
+    pub acs_key: Option<String>,
+    pub scr_key: Option<String>,
     pub timeout: u8,
 }
 
@@ -123,6 +124,6 @@ impl StrConn {
 // =========================== INTERFACE ==================
 
 pub trait Connect {
-    async fn conn(&self) -> Result<(), DbError>;
+    async fn conn_psql(&self) -> Result<tokio_postgres::Client, ErrorIn>;
     
 }
