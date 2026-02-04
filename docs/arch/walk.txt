@@ -5,11 +5,13 @@
     dynamodb
     cassandra ✅
 
-2 - Reader Schema
+2 - Log the entire process to record its operation
+
+3 - Reader Schema
     postgres
     mssql
     mongodb
     dynamodb
     cassandra
 
-3 - think about keys and integrities
+4 - think about keys and integrities

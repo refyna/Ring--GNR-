@@ -4,11 +4,13 @@
 
 /* Author: Yury - 11/01/2025 */
 
+use tracing::{info, error};
+
 pub mod psql;
-pub mod mssql;
-pub mod mongo;
-pub mod csdr;
-pub mod dyndb;
+// pub mod mssql;
+// pub mod mongo;
+// pub mod csdr;
+// pub mod dyndb;
 
 pub mod errors;
 
@@ -50,13 +52,13 @@ impl StrConn {
         user: String, 
         pwd: String,    
     ) -> Self {
-        self.user = Some(user.into());
-        self.pwd = Some(pwd.into());
+        self.user = Some(user);
+        self.pwd = Some(pwd);
         self
     }
 
     pub fn with_db(mut self, dbn: String,) -> Self {
-        self.dbn = Some(dbn.into());
+        self.dbn = Some(dbn);
         self
     }
 
@@ -78,52 +80,52 @@ impl StrConn {
         params.join(" ")
     }
 
-    fn uri_parameters(&self, protocol: &str) -> String {
-        match (&self.user, &self.pwd) {
-            (Some(user), Some(pwd)) => format!(
-                "{}://{}:{}@{}:{}",
-                protocol, user, pwd, self.host, self.port
-            ),
-            _ => format!(
-                "{}://{}:{}",
-                protocol, self.host, self.port
-            ),
-        }
-    }
+//     fn uri_parameters(&self, protocol: &str) -> String {
+//         match (&self.user, &self.pwd) {
+//             (Some(user), Some(pwd)) => format!(
+//                 "{}://{}:{}@{}:{}",
+//                 protocol, user, pwd, self.host, self.port
+//             ),
+//             _ => format!(
+//                 "{}://{}:{}",
+//                 protocol, self.host, self.port
+//             ),
+//         }
+//     }
 
-    fn user(&self) -> Option<&str> {
-        self.user.as_deref()
-    }
+//     fn user(&self) -> Option<&str> {
+//         self.user.as_deref()
+//     }
 
-    fn pwd(&self) -> Option<&str> {
-        self.pwd.as_deref()
-    }
+//     fn pwd(&self) -> Option<&str> {
+//         self.pwd.as_deref()
+//     }
     
-    fn dbn(&self) -> Option<&str> {
-        self.dbn.as_deref()
-    }
+//     fn dbn(&self) -> Option<&str> {
+//         self.dbn.as_deref()
+//     }
 
-    fn acs_key(&self) -> Option<&str> {
-        self.acs_key.as_deref()
-    }
+//     fn acs_key(&self) -> Option<&str> {
+//         self.acs_key.as_deref()
+//     }
 
-    fn scr_key(&self) -> Option<&str> {
-        self.scr_key.as_deref()
-    }
+//     fn scr_key(&self) -> Option<&str> {
+//         self.scr_key.as_deref()
+//     }
 
-   fn host(&self) -> &str {
-        &self.host
-    }
+//    fn host(&self) -> &str {
+//         &self.host
+//     }
 
-    fn port(&self) -> u16 {
-        self.port
-    }
+//     fn port(&self) -> u16 {
+//         self.port
+//     }
 }
 
 
 // =========================== INTERFACE ==================
 
 pub trait Connect {
-    async fn conn_psql(&self) -> Result<tokio_postgres::Client, ErrorIn>;
+    fn conn_psql(&self) -> impl std::future::Future<Output = Result<tokio_postgres::Client, ErrorIn>> + Send;
     
 }

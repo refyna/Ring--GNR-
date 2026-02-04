@@ -1,19 +1,22 @@
 use std::error::Error;
+use thiserror::Error;
 
-
-#[derive(Debug)]
+#[derive(Debug, Error)]
+#[error("{locale}: {cause}")]
 pub struct ErrorIn {
     locale: String,
+
+    #[source]
     cause: Box<dyn Error + Send + Sync>
 }
 
 impl ErrorIn {
     pub fn new<L: Into<String>>(
-        Locale: L,
+        locale: L,
         cause: impl Error + Send + Sync + 'static
     ) -> Self {
         Self { 
-            locale: Locale.into(), 
+            locale: locale.into(), 
             cause: Box::new(cause), 
         }
     }
